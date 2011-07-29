@@ -1,0 +1,63 @@
+    <!--
+  ~ This file is part of the GeoLatte project. This code is licenced under
+  ~ the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance
+  ~ with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the License
+  ~ is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+  ~ implied. See the License for the specific language governing permissions and limitations under the
+  ~ License.
+  ~
+  ~ Copyright (C) 2010 - 2010 and Ownership of code is shared by:
+  ~ Qmino bvba - Romeinsestraat 18 - 3001 Heverlee  (http://www.Qmino.com)
+  ~ Geovise bvba - Generaal Eisenhowerlei 9 - 2140 Antwerpen (http://www.geovise.com)
+  -->
+<FeatureServerConfig>
+    <HibernateConfiguration>
+        <!-- Any hibernate property can be placed here -->
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/dwh</property>
+        <property name="connection.username">postgres</property>
+        <property name="connection.password">postgres</property>
+        <property name="dialect">org.hibernatespatial.postgis.PostgisDialect</property>
+        <property name="show_sql">false</property>
+        <property name="current_session_context_class">thread</property>
+        <property name="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+ <!-- configuration pool via c3p0-->
+
+        <!-- this requires c3p0-0.9.1.2.jar and hibernate-c3p0-3.3.2.GA.jar -->
+        <property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+
+        <property name="c3p0.acquire_increment">1</property>
+
+        <property name="c3p0.idle_test_period">100</property>
+
+        <property name="c3p0.max_size">5</property>
+
+        <property name="c3p0.max_statements">0</property>
+
+        <property name="c3p0.min_size">1</property>
+
+        <property name="c3p0.timeout">100</property> 
+    </HibernateConfiguration>
+    
+    <Mapping>
+        <Tables>
+            <Schema>adhoc</Schema>
+            <!-- A table is included if a rule is present for its inclusion and no rule is present for its exclusion
+                 Both the Include and the Exclude set are processes in order, and as soon as rule is hit, the rest of the
+                 rules are skipped. If an item matches both an includes and an excludes set, it is therefore NOT included.
+                 * is supported as a wildcard on names.
+                 Suppose you include TBL_* and VIEW_*, and you exclude *Test, then the tables TBL_data, and VIEW_PERSONS
+                 will be included, but OTHER and TBL_ViewTest will not.
+                 Note that only '*' is accepted as a wildcardcharacter.
+                 -->
+            <Include>
+                <Item>t_*</Item>
+            </Include>
+            <Exclude>
+            </Exclude>
+        </Tables>
+    </Mapping>
+</FeatureServerConfig>
+
+        
