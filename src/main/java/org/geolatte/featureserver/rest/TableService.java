@@ -114,7 +114,8 @@ public interface TableService {
 
 
     /**
-     * Gets the values of the given property in the given table in CSV format. Returns distinct values.
+     * Gets the values of the given property in the given table in CSV format. Returns distinct values. Is only
+     * applicable on integer or string valued properties.
      *
      * @param tableName    the name of the table to retrieve
      * @param propertyName the name of the property to retrieve values from
@@ -131,7 +132,8 @@ public interface TableService {
                                          @DefaultValue(DEFAULT_SEPARATOR) @QueryParam("separator") String separator);
 
     /**
-     * Gets the values of the given property in the given table in JSON format. Returns distinct values.
+     * Gets the values of the given property in the given table in JSON format. Returns distinct values. Is only
+     * applicable on integer or string valued properties.
      *
      * @param tableName the name of the table to retrieve
      * @param propertyName the name of the property to retrieve values from

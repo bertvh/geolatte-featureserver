@@ -138,14 +138,14 @@ public class DefaultTableService implements TableService {
     }
 
     public Response getTableJSON(String tableName,
-                             String bbox,
-                             String cql,
-                             Integer start,
-                             Integer limit,
-                             String sortColumns,
-                             String sortDirections,
-                             String visibleColumns,
-                             String asdownload) {
+                                 String bbox,
+                                 String cql,
+                                 Integer start,
+                                 Integer limit,
+                                 String sortColumns,
+                                 String sortDirections,
+                                 String visibleColumns,
+                                 String asdownload) {
 
         return getTable(OutputFormat.JSON,
                         tableName,
@@ -178,8 +178,10 @@ public class DefaultTableService implements TableService {
             List<Order> orderings = getOrderings(tableName, sortColumns, sortDirections);
             featureReader = DbaseFacade.getInstance().getReader(tableName, bbox, cql, start, limit, orderings);
             if (featureReader == null) {
-                String msg = tableNotExistsMessage(tableName);
-                return toResponse(msg,null);
+                Response.ResponseBuilder builder =
+                    Response.status(Response.Status.NOT_FOUND)
+                            .entity(tableNotExistsMessage(tableName));
+                return builder.build();
             }
             List<String> visible = new ArrayList<String>();
             if (visibleColumns != null) {
@@ -199,12 +201,16 @@ public class DefaultTableService implements TableService {
 
         } catch (ConfigurationException e) {
             LOGGER.warn("Invalid Featureserver configuration: " + e.getMessage());
-            String msg  = "{\"error\": \"Invalid Featureserver configuration: " + e.getMessage() + "\"}";
-            return toResponse(msg,null);
+            Response.ResponseBuilder builder =
+                    Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                            .entity("{\"error\": \"Invalid Featureserver configuration: " + e.getMessage() + "\"}");
+            return builder.build();
         } catch (DatabaseException e) {
             LOGGER.warn("Database access problem: " + e.getMessage());
-            String msg = "{\"error\": \"Database access problem: " + e.getMessage() + "\"}";
-            return toResponse(msg, null);
+            Response.ResponseBuilder builder =
+                    Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                            .entity("{\"error\": \"Database access problem: " + e.getMessage() + "\"}");
+            return builder.build();
         } finally {
             if (featureReader != null) {
                 featureReader.close();
@@ -389,7 +395,8 @@ public class DefaultTableService implements TableService {
         final String schema = FeatureServerConfiguration.getInstance().getDbaseSchema();
         Class<?> entityClass = AutoMapper.getClass(null, schema, tableName);
         if (entityClass == null) {
-            Response.ResponseBuilder builder= Response.ok(tableNotExistsMessage(tableName));
+            Response.ResponseBuilder builder = Response.status(Response.Status.NOT_FOUND);
+            builder.entity(tableNotExistsMessage(tableName));
             return builder.build();
         }
 
@@ -397,11 +404,13 @@ public class DefaultTableService implements TableService {
         try {
             propertyType = getPropertyType(entityClass, propertyName);
         } catch (NoSuchFieldException e) {
-            Response.ResponseBuilder builder= Response.ok(propertyNotExistsMessage(tableName, propertyName));
+            Response.ResponseBuilder builder= Response.status(Response.Status.NOT_FOUND);
+            builder.entity(propertyNotExistsMessage(tableName, propertyName));
             return builder.build();
         }
         if (!canDoDistinct(propertyType)) {
-            Response.ResponseBuilder builder= Response.ok(propertyDistinctNotSupportedMessage(tableName, propertyName));
+            Response.ResponseBuilder builder= Response.status(Response.Status.PRECONDITION_FAILED);
+            builder.entity(propertyDistinctNotSupportedMessage(tableName, propertyName));
             return builder.build();
         }
         List<?> values = DbaseFacade.getInstance().getDistinctValues(entityClass, propertyName, propertyType);
@@ -409,7 +418,7 @@ public class DefaultTableService implements TableService {
         return builder.build();
 
     }
-        
+
     private String toFormat(List<?> values, OutputFormat outputFormat, String tableName, String propertyName, String separator) {
         if (OutputFormat.JSON.equals(outputFormat)) {
             return toJSONOutput(values,tableName, propertyName);
