@@ -21,14 +21,14 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
-import org.geolatte.core.expressions.Expression;
-import org.geolatte.core.expressions.Expressions;
-import org.geolatte.core.expressions.Filter;
-import org.geolatte.core.expressions.FilterTransformation;
-import org.geolatte.core.transformer.ClosedTransformerChain;
-import org.geolatte.core.transformer.SimpleTransformerSink;
-import org.geolatte.core.transformer.SimpleTransformerSource;
-import org.geolatte.core.transformer.TransformerChainFactory;
+import org.geolatte.common.expressions.Expression;
+import org.geolatte.common.expressions.Expressions;
+import org.geolatte.common.expressions.Filter;
+import org.geolatte.common.expressions.FilterTransformation;
+import org.geolatte.common.transformer.ClosedTransformerChain;
+import org.geolatte.common.transformer.SimpleTransformerSink;
+import org.geolatte.common.transformer.SimpleTransformerSource;
+import org.geolatte.common.transformer.TransformerChainFactory;
 
 import java.util.*;
 
