@@ -17,7 +17,7 @@ package org.geolatte.featureserver.dbase;
 import com.vividsolutions.jts.geom.Envelope;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.geolatte.common.cql.hibernate.HibernateCQLAdapter;
+import org.geolatte.common.cql.hibernate.CqlHibernate;
 import org.geolatte.common.geo.EnvelopeConverter;
 import org.geolatte.common.geo.TypeConversionException;
 import org.geolatte.common.reflection.EntityClassReader;
@@ -143,7 +143,7 @@ public class StandardFeatureReader extends TransformerSource<Object> {
     private DetachedCriteria cqlToCriteria(String cqlString, Class entityClass) {
         if (cqlString == null) return null;
         try {
-            return HibernateCQLAdapter.toCriteria(cqlString, entityClass);
+            return CqlHibernate.toCriteria(cqlString, entityClass);
         } catch (ParseException e) {
             throw new DatabaseException(e);
         }
